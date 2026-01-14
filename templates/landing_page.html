@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> Bot Studio - Welcome</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            color: #0f172a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .logo-img {
+            height: 70px;
+            width: auto;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+        }
+
+        /* .logo-text {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        } */
+
+        .logo-text span:first-child {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.02em;
+        }
+
+        .logo-text span:last-child {
+            font-size: 0.9rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .tagline {
+            font-size: 2.8rem;
+            font-weight: 800;
+            text-align: center;
+            color: #0f172a;
+            line-height: 1.2;
+            letter-spacing: -0.03em;
+            margin-bottom: 15px;
+            max-width: 800px;
+        }
+
+        .subtagline {
+            font-size: 1.2rem;
+            color: #64748b;
+            text-align: center;
+            max-width: 700px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        /* Features Section */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            width: 100%;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 20px 40px -5px rgba(14, 165, 233, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px -5px rgba(14, 165, 233, 0.15);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #0ea5e9, #2563eb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+
+        .feature-desc {
+            color: #64748b;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 20px 60px rgba(14, 165, 233, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .cta-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 20px;
+        }
+
+        .cta-desc {
+            color: #64748b;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 18px 36px;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            min-width: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-demo {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-admin:hover{
+            transform: translateY(-3px);
+            transition: all 0.3s ease;
+            text-shadow: 0 15px 35px rgba(92, 151, 246, 0.4);
+        }
+        .btn-demo:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn-admin  {
+            text-shadow: 0 15px 35px rgba(139, 92, 246, 0.4);
+        }
+        .btn-build {
+            background: linear-gradient(135deg, #0ea5e9, #2563eb);
+            color: white;
+            box-shadow: 0 10px 25px rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-build:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(14, 165, 233, 0.4);
+        }
+
+        .btn-icon {
+            font-size: 1.2rem;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.9rem;
+            padding: 20px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px 25px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0ea5e9;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 5px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .tagline {
+                font-size: 2rem;
+            }
+            
+            .subtagline {
+                font-size: 1rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            
+            <h1 class="tagline">Build Intelligent Website Assistants in Minutes</h1>
+            <p class="subtagline">
+                Create custom AI chatbots trained on your website content. 
+                No coding required. Deploy in minutes. Engage visitors 24/7.
+            </p>
+        </div>
+
+        <!-- Features -->
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3 class="feature-title">Smart AI Assistant</h3>
+                <p class="feature-desc">
+                    Powered by advanced LLM technology that understands context and provides 
+                    accurate responses based on your website content.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3 class="feature-title">Quick Setup</h3>
+                <p class="feature-desc">
+                    Just provide your website URL. Our system automatically crawls and trains 
+                    the bot. No technical expertise needed.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3 class="feature-title">Secure & Private</h3>
+                <p class="feature-desc">
+                    Your data stays private. We use secure cloud infrastructure with 
+                    enterprise-grade encryption and compliance standards.
+                </p>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="cta-section">
+            <h2 class="cta-title">Ready to Get Started?</h2>
+            <p class="cta-desc">
+                Choose your path below. Try our demo to see the bot in action, 
+                or start building your own customized assistant immediately.
+            </p>
+            
+            <div class="button-group">
+                <a href="{{url_for('admin_login')}}" class="btn btn-build">
+                    <span class="btn-icon">🚀</span>
+                    Build Your Bot Now
+                </a>
+            </div>
+            
+        </div>
+            
+            <p style="margin-top: 30px;">
+                <span style="color: #0ea5e9;">Secure • Managed • Trusted</span>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Simple animation for stats counter
+        document.addEventListener('DOMContentLoaded', function() {
+            const statValues = document.querySelectorAll('.stat-value');
+            
+            statValues.forEach(stat => {
+                const originalText = stat.textContent;
+                // Remove + or % signs temporarily for animation
+                const cleanValue = originalText.replace(/[^0-9]/g, '');
+                
+                if (!isNaN(cleanValue) && cleanValue !== '') {
+                    const target = parseInt(cleanValue);
+                    let current = 0;
+                    const increment = target / 50; // Adjust speed
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            current = target;
+                            clearInterval(timer);
+                        }
+                        // Restore the original suffix (+ or %)
+                        stat.textContent = Math.floor(current).toLocaleString() + 
+                            originalText.replace(/[0-9]/g, '').replace(/,/g, '');
+                    }, 30);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

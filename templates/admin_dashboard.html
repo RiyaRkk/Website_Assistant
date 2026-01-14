@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Bots</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            padding: 30px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e1e5eb;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo img {
+            height: 50px;
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0ea5e9;
+        }
+        
+        .table-wrapper {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+        }
+        
+        thead th {
+            padding: 18px 20px;
+            text-align: left;
+            color: white;
+            font-weight: 600;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        thead th:first-child {
+            border-top-left-radius: 12px;
+        }
+        
+        thead th:last-child {
+            border-top-right-radius: 12px;
+        }
+        
+        tbody tr {
+            border-bottom: 1px solid #f1f5f9;
+            transition: all 0.2s ease;
+        }
+        
+        tbody tr:hover {
+            background-color: #f8fafc;
+        }
+        
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+        
+        tbody td {
+            padding: 18px 20px;
+            color: #475569;
+            font-size: 15px;
+        }
+        
+        tbody tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        
+        tbody tr:nth-child(even):hover {
+            background-color: #f0f9ff;
+        }
+        
+        .bot-id {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 14px;
+        }
+        
+        .company-name {
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .bot-link a {
+            color: #0ea5e9;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .bot-link a:hover {
+            color: #0284c7;
+            text-decoration: underline;
+        }
+        
+        .date-cell {
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .empty-message {
+            text-align: center;
+            padding: 60px 20px;
+            color: #94a3b8;
+            font-style: italic;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .count-badge {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0284c7;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .table-wrapper {
+                overflow-x: auto;
+            }
+            
+            table {
+                min-width: 700px;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Admin Dashboard <span class="count-badge">{{ data|length }} bots</span></h1>
+        </div>
+        
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Bot Name</th>
+                        <th>Chatbot URL</th>
+                        <th>Company Name</th>
+                        <th>Created Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if data %}
+                        {% for bot in data %}
+                        <tr>
+                            <td class="bot-id">#{{ bot.bot_id[:8] }}</td>
+                            <td class="company-name">{{ bot.name }}</td>
+                            <td class="bot-link">
+                                <a href="/bot/{{ bot.bot_id }}" target="_blank">
+                                    {{ bot.start_url[:40] }}{% if bot.start_url|length > 40 %}...{% endif %}
+                                </a>
+                            </td>
+                            <td></td>
+                            <td class="date-cell">
+                                {% if bot.created_at %}
+                                    {{ bot.created_at.strftime('%Y-%m-%d') }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                    <tr>
+                        {{bot.start_url}}
+                    </tr>
+                        <tr>
+                            <td colspan="4" class="empty-message">
+                                No bots found. Create your first bot to get started.
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="footer">
+            © 2024 M-IT Bot Studio | Total Bots: {{ data|length }}
+        </div>
+    </div>
+</body>
+</html>

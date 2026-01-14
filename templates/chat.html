@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bot Studio</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root{
+            /* Light Blue Cloud Theme Palette */
+            --bg-hero: linear-gradient(120deg, #f0f9ff 0%, #e0f2fe 100%);
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-glass: rgba(255, 255, 255, 0.95);
+            
+            --primary: #0ea5e9; /* Sky Blue */
+            --primary-dark: #0284c7;
+            --accent: #38bdf8;
+            
+            --text-main: #0f172a; /* Dark Navy for text */
+            --text-sub: #64748b;  /* Slate Gray */
+            
+            --border-light: #e2e8f0;
+            --input-bg: #ffffff;
+            
+            --success: #10b981;
+            
+            --radius: 20px;
+            --shadow: 0 20px 40px -5px rgba(14, 165, 233, 0.15);
+        }
+
+        * {box-sizing:border-box; margin:0; padding:0; font-family: 'Poppins', Arial, sans-serif;}
+
+        body {
+            min-height: 100vh;
+            background: var(--bg-hero);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Prevent body scroll, handle inside containers */
+        }
+
+        /* Top navbar */
+        .top-nav {
+            height: 70px;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            z-index: 50;
+        }
+        .nav-left {
+            display:flex;
+            align-items:center;
+            gap:15px;
+        }
+        .nav-logo-img {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
+        /* Fallback if logo.png is missing, style the M div */
+        .nav-logo-placeholder {
+            width:40px;
+            height:40px;
+            border-radius:12px;
+            background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-weight:800;
+            color:white;
+            font-size:1.2rem;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+        }
+        
+        .nav-brand-text {
+            display:flex;
+            flex-direction:column;
+        }
+        .nav-brand-text span:first-child {
+            font-size:1rem;
+            font-weight:700;
+            color: #0f172a;
+            letter-spacing: -0.02em;
+        }
+        .nav-brand-text span:last-child {
+            font-size:0.75rem;
+            color:var(--text-sub);
+            font-weight: 500;
+        }
+
+        .nav-right {
+            display:flex;
+            gap:12px;
+            align-items:center;
+            font-size:0.85rem;
+            color:var(--text-sub);
+        }
+        .nav-chip {
+            padding:8px 16px;
+            border-radius:999px;
+            background: #f1f5f9;
+            color: #475569;
+            font-weight: 500;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Layout */
+        .page-shell {
+            flex:1;
+            display:flex;
+            justify-content:center;
+            align-items:center; /* Centered vertically */
+            padding:20px;
+        }
+
+        .main-card {
+            width:100%;
+            max-width:1200px;
+            height:calc(100vh - 110px);
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.6);
+            box-shadow: var(--shadow);
+            display:flex;
+            overflow:hidden;
+            position:relative;
+        }
+
+        /* Dashboard left + right */
+        #setup-panel {
+            position:absolute;
+            inset:0;
+            display:flex;
+            flex-direction:row;
+            z-index:10;
+            background: transparent;
+            transition: opacity 0.5s ease;
+        }
+
+        .dash-left {
+            flex:1.2;
+            padding: 40px;
+            border-right: 1px solid var(--border-light);
+            display:flex;
+            flex-direction:column;
+            gap:24px;
+            background: rgba(255,255,255,0.4);
+        }
+
+        .welcome-badge {
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            padding:6px 14px;
+            border-radius:999px;
+            background: #e0f2fe;
+            border: 1px solid #bae6fd;
+            font-size:0.8rem;
+            color: #0284c7;
+            font-weight: 600;
+        }
+        .welcome-badge-dot {
+            width:8px;
+            height:8px;
+            border-radius:999px;
+            background: #0ea5e9;
+            box-shadow:0 0 0 3px rgba(14, 165, 233, 0.2);
+        }
+
+        .setup-title {
+            font-size:2.2rem;
+            font-weight:700;
+            letter-spacing:-0.03em;
+            color: #0f172a;
+            line-height: 1.2;
+        }
+        .setup-subtitle {
+            font-size:0.95rem;
+            color: #64748b;
+            line-height: 1.6;
+            max-width:450px;
+        }
+
+        .stats-row {
+            display:flex;
+            gap:10px;
+            margin-top:10px;
+            flex-wrap:wrap;
+        }
+        .stat-pill {
+            padding:8px 14px;
+            border-radius:8px;
+            font-size:0.8rem;
+            background: white;
+            border: 1px solid var(--border-light);
+            color: #475569;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .bots-card {
+            margin-top:auto; /* Push to bottom */
+            padding:20px;
+            border-radius: 20px;
+            background: white;
+            border:1px solid var(--border-light);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+            display:flex;
+            flex-direction:column;
+            min-height: 250px;
+        }
+        .bots-card-header {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .bots-card-header h2 {
+            font-size:0.9rem;
+            font-weight:700;
+            text-transform:uppercase;
+            color: #94a3b8;
+            letter-spacing: 0.05em;
+        }
+        .bots-card-header span {
+            font-size:0.8rem;
+            color: var(--primary);
+            font-weight: 600;
+            background: #e0f2fe;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        .bots-list {
+            padding-right: 5px;
+            max-height:200px;
+            overflow-y:auto;
+        }
+        /* Custom scrollbar */
+        .bots-list::-webkit-scrollbar { width: 4px; }
+        .bots-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+        .bot-row {
+            padding:12px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:12px;
+            border-radius:12px;
+            transition: all 0.2s;
+            margin-bottom: 6px;
+            border: 1px solid transparent;
+        }
+        .bot-row:hover {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            transform: translateX(4px);
+        }
+        .bot-main {
+            display:flex;
+            flex-direction:column;
+            gap:2px;
+            min-width:0;
+        }
+        .bot-name {
+            font-weight:600;
+            color: #334155;
+            font-size: 0.9rem;
+        }
+        .bot-url {
+            font-size:0.75rem;
+            color: #94a3b8;
+        }
+        .bot-meta {
+            display:flex;
+            align-items:center;
+            gap:8px;
+        }
+        .bot-status-badge {
+            font-size:0.7rem;
+            padding:4px 8px;
+            border-radius:6px;
+            background: #f1f5f9;
+            color: #64748b;
+            font-weight: 600;
+        }
+        .bot-status-ready {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .bot-link-btn {
+            font-size:0.75rem;
+            padding:6px 14px;
+            border-radius:999px;
+            background: var(--primary);
+            color: white;
+            text-decoration:none;
+            font-weight: 500;
+            transition: 0.2s;
+            box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3);
+        }
+        .bot-link-btn:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 6px 12px rgba(14, 165, 233, 0.4);
+        }
+
+        .bots-empty {
+            text-align: center;
+            padding: 20px;
+            font-size:0.85rem;
+            color:var(--text-sub);
+            font-style: italic;
+        }
+
+        /* Right Side Form */
+        .dash-right {
+            flex:1;
+            padding: 40px;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            background: white;
+        }
+
+        .setup-content {
+            width:100%;
+            max-width:400px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none}}
+
+        .setup-desc {
+            color:var(--text-sub);
+            margin-bottom:24px;
+            font-size:0.95rem;
+            line-height: 1.5;
+        }
+
+        .input-group { margin-bottom:20px; text-align:left; }
+        .input-group label {
+            display:block;
+            font-size:0.8rem;
+            font-weight:700;
+            text-transform:uppercase;
+            letter-spacing:0.05em;
+            color: #64748b;
+            margin-bottom:8px;
+        }
+        .input-field {
+            width:100%;
+            padding:14px 16px;
+            border-radius:12px;
+            border:2px solid #e2e8f0;
+            font-size:0.95rem;
+            outline:none;
+            transition:all 0.2s;
+            background: #f8fafc;
+            color: #334155;
+            font-family: 'Poppins', sans-serif;
+        }
+        .input-field::placeholder {
+            color: #cbd5e1;
+        }
+        .input-field:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+        }
+
+        .file-row { display:flex; gap:10px; align-items:center; }
+        .small-btn {
+            padding:14px 16px;
+            border-radius:12px;
+            border:2px solid #e2e8f0;
+            background: white;
+            cursor:pointer;
+            font-weight:600;
+            color: #64748b;
+            transition: 0.2s;
+        }
+        .small-btn:hover { background: #f1f5f9; color: #334155; }
+
+        .btn-primary {
+            width:100%;
+            padding:16px;
+            border-radius:14px;
+            border:none;
+            background: linear-gradient(135deg, #0ea5e9, #2563eb);
+            color:white;
+            font-weight:600;
+            font-size:1rem;
+            cursor:pointer;
+            margin-top:15px;
+            transition:transform 0.1s, box-shadow 0.2s;
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+            font-family: 'Poppins', sans-serif;
+        }
+        .btn-primary:hover { 
+            box-shadow: 0 15px 30px rgba(37, 99, 235, 0.4); 
+            transform: translateY(-2px);
+        }
+        .btn-primary:active { transform:scale(0.98); }
+        .btn-primary:disabled { opacity:0.7; cursor:wait; }
+
+        /* Progress overlay (Cloud Theme) */
+        #progress-container {
+            position:absolute;
+            inset:0;
+            background: rgba(255, 255, 255, 0.98);
+            z-index:20;
+            display:none;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            backdrop-filter: blur(5px);
+        }
+        .percentage-text {
+            font-size:5rem;
+            font-weight:800;
+            font-variant-numeric:tabular-nums;
+            background: linear-gradient(135deg,#0ea5e9,#2563eb);
+            background-clip:text;
+            color:transparent;
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+            margin-bottom:10px;
+            letter-spacing:-0.05em;
+        }
+        .status-label {
+            color: #64748b;
+            font-size:1.1rem;
+            font-weight:500;
+            animation:pulse 2s infinite;
+        }
+        @keyframes pulse { 0%,100%{opacity:0.6} 50%{opacity:1} }
+
+        /* Chat interface (Clean Messenger Style) */
+        #chat-interface {
+            display:flex;
+            flex-direction:column;
+            height:100%;
+            width: 100%;
+            opacity:0;
+            pointer-events:none;
+            transition:opacity 0.8s ease;
+            background: #ffffff;
+        }
+
+        header {
+            display:flex;
+            align-items:center;
+            gap:16px;
+            padding:16px 24px;
+            background: #ffffff;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .brand { display:flex; align-items:center; gap:14px; }
+
+        .logo-display {
+            width:48px;
+            height:48px;
+            border-radius:50%;
+            background-color: #f0f9ff;
+            background-size:cover;
+            background-position:center;
+            background-repeat:no-repeat;
+            border: 2px solid white;
+            box-shadow: 0 4px 10px rgba(14, 165, 233, 0.2);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-weight:700;
+            font-size:1.2rem;
+            color: var(--primary);
+            overflow:hidden;
+        }
+        .logo-display img {
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            display:none;
+        }
+        #chat-logo-text {
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            width:100%;
+            height:100%;
+            color: var(--primary);
+        }
+
+        .bot-name { font-weight:700; color: #1e293b; font-size:1.1rem; }
+        .bot-status { 
+            font-size:0.8rem; 
+            color: var(--success); 
+            display:flex; 
+            align-items:center; 
+            gap:6px; 
+            font-weight:500;
+        }
+        .bot-status::before {
+            content:'';
+            width:8px;
+            height:8px;
+            background: var(--success);
+            border-radius:999px;
+            box-shadow:0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+
+        #chat-box {
+            flex:1;
+            padding:24px;
+            overflow-y:auto;
+            display:flex;
+            flex-direction:column;
+            gap:16px;
+            /* Subtle Pattern Background */
+            background-color: #f8fafc;
+            background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .message {
+            max-width:75%;
+            padding:14px 18px;
+            border-radius:18px;
+            line-height:1.6;
+            font-size:0.95rem;
+            position:relative;
+            animation:msgFade 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        @keyframes msgFade { from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none}}
+
+        .assistant {
+            align-self:flex-start;
+            background: #ffffff;
+            color: #334155;
+            border-bottom-left-radius: 4px;
+            border: 1px solid #e2e8f0;
+        }
+        .user {
+            align-self:flex-end;
+            background: linear-gradient(135deg, #0ea5e9, #2563eb);
+            color:white;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 5px 15px rgba(14, 165, 233, 0.3);
+        }
+
+        .input-area {
+            padding:16px 24px;
+            border-top:1px solid #f1f5f9;
+            display:flex;
+            gap:12px;
+            background: white;
+            align-items:center;
+        }
+        #user-msg-input {
+            flex:1;
+            padding:14px 20px;
+            border-radius:999px;
+            border:2px solid #e2e8f0;
+            outline:none;
+            background: #f8fafc;
+            font-size:0.95rem;
+            color: #334155;
+            transition: 0.2s;
+        }
+        #user-msg-input::placeholder {
+            color: #94a3b8;
+        }
+        #user-msg-input:focus {
+            border-color:var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+        }
+
+        #send-btn {
+            width:50px;
+            height:50px;
+            border-radius:50%;
+            background: linear-gradient(135deg, #0ea5e9, #2563eb);
+            border:none;
+            color:white;
+            display:grid;
+            place-items:center;
+            cursor:pointer;
+            transition:transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 5px 15px rgba(14, 165, 233, 0.4);
+        }
+        #send-btn:hover { transform:translateY(-2px); box-shadow: 0 8px 20px rgba(14, 165, 233, 0.5); }
+        #send-btn:active { transform:scale(0.95); box-shadow:none; }
+        #send-btn svg { width:20px; height:20px; fill:currentColor; margin-left:2px; }
+
+        .hide-panel { opacity:0; pointer-events:none; display:none !important; }
+        .show-chat { opacity:1 !important; pointer-events:auto !important; }
+
+        /* Small toast for share link */
+        .toast {
+            position:fixed;
+            bottom:24px;
+            right:24px;
+            padding:16px 20px;
+            background: white;
+            border-radius:12px;
+            border-left: 4px solid var(--primary);
+            font-size:0.85rem;
+            color: #334155;
+            z-index:50;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            max-width:350px;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn { from{transform:translateX(100%)} to{transform:translateX(0)}}
+        
+        .toast-link {
+            margin-top:6px;
+            font-size:0.8rem;
+            word-break:break-all;
+            color: var(--primary);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-nav">
+    <div class="nav-right">
+        <div class="nav-chip">Secure • Managed • Trusted</div>
+    </div>
+</div>
+
+<div class="page-shell">
+    <div class="main-card">
+        <div id="setup-panel">
+            <div class="dash-left">
+                <div>
+                    <div class="welcome-badge">
+                        <span class="welcome-badge-dot"></span>
+                        <span>Welcome to Website Bot builder</span>
+                    </div>
+                    <div style="height: 15px;"></div>
+                    <h1 class="setup-title">Launch a smart assistant<br/>for your website.</h1>
+                    <div style="height: 10px;"></div>
+                    <p class="setup-subtitle">
+                        Your very own website bot, now ready in just few minutes. <br>
+                        Enter your website URL, add your logo,name your bot, set your unique tagline. <br>
+                        Sit back and relax, while your bot gets ready.
+
+                    </p>
+
+                    <div class="stats-row">
+                        <div class="stat-pill">Fast </div>
+                        <div class="stat-pill">Accurate</div>
+                        <div class="stat-pill">Safe</div>
+                        <div class="stat-pill">Secure</div>
+                        <div class="stat-pill">LLM-Powered</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dash-right">
+                <div class="setup-content" id="form-container">
+                    <p class="setup-desc">
+                        Provide your website URL and customize your agent's identity. We handle the infrastructure.
+                    </p>
+                    
+                    <div class="input-group">
+                        <label>Target Website URL</label>
+                        <input id="config-url" type="text" class="input-field" placeholder="https://yourcompany.com">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Upload Bot Logo (Optional)</label>
+                        <div class="file-row">
+                            <input id="config-logo-file" type="file" accept="image/*" style="flex:1; padding: 12px;" class="input-field">
+                            <button id="clear-logo-btn" class="small-btn" type="button">Clear</button>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Bot Name</label>
+                        <input id="config-name" type="text" class="input-field" placeholder="e.g. M-IT Support Assistant" required >
+                    </div>
+
+                    <div class="input-group">
+                        <label>Bot Tagline</label>
+                        <input id="config-tagline" type="text" class="input-field" placeholder="e.g. Hello! I am Bot. How can I help you today?" required>
+                    </div>
+
+
+                    <button id="start-btn" class="btn-primary">Create my bot</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="progress-container">
+            <div class="percentage-text" id="percent-display">0%</div>
+            <div class="status-label">Initializing cloud pipeline...</div>
+        </div>
+
+        <div id="chat-interface">
+            <header>
+                <div class="brand">
+                    <div id="chat-logo" class="logo-display" aria-hidden="false">
+                        <img id="chat-logo-img" alt="bot logo" />
+                        <span id="chat-logo-text">AI</span>
+                    </div>
+                    <div>
+                        <div id="chat-title" class="bot-name">Chat Bot</div>
+                        <div class="bot-status">Online</div>
+                    </div>
+                </div>
+            </header>
+
+            <div id="chat-box">
+                <div id = "chat-tagline" class="message assistant">
+                    {{tagline}}
+                </div>
+            </div>
+
+            <div class="input-area">
+                <input type="text" id="user-msg-input" placeholder="Ask me anything.... ">
+                <button id="send-btn">
+                    <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const startBtn = document.getElementById('start-btn');
+    const setupPanel = document.getElementById('setup-panel');
+    const progressContainer = document.getElementById('progress-container');
+    const percentDisplay = document.getElementById('percent-display');
+    const chatInterface = document.getElementById('chat-interface');
+    const statusLabel = document.querySelector('.status-label');
+
+    const chatLogoEl = document.getElementById('chat-logo');
+    const chatLogoImg = document.getElementById('chat-logo-img');
+    const chatLogoText = document.getElementById('chat-logo-text');
+    const chatTitle = document.getElementById('chat-title');
+    const chatTagline = document.getElementById('chat-tagline');
+
+    const logoFileInput = document.getElementById('config-logo-file');
+    const clearLogoBtn = document.getElementById('clear-logo-btn');
+
+    const chatBox = document.getElementById("chat-box");
+    const sendBtn = document.getElementById("send-btn");
+    const userInput = document.getElementById("user-msg-input");
+
+    const botsContainer = document.getElementById('bots-container');
+    const botsCountLabel = document.getElementById('bots-count-label');
+
+    let uploadedLogoDataUrl = null;
+    let currentBotId = null;
+    let currentSessionId = null;
+
+    // --- Helpers to get bot_id from URL ---
+    function getBotIdFromLocation() {
+        const url = new URL(window.location.href);
+        const segments = url.pathname.split('/').filter(Boolean);
+        if (segments[0] === 'bot' && segments[1]) {
+            return segments[1];
+        }
+        return new URLSearchParams(url.search).get('bot_id');
+    }
+
+    // --- Logo helpers ---
+    function setLogoFromDataUrl(dataUrl, fallbackLetter) {
+        if (!dataUrl) {
+            chatLogoImg.style.display = 'none';
+            chatLogoImg.src = '';
+            chatLogoText.style.display = 'flex';
+            chatLogoText.textContent = fallbackLetter || 'A';
+            return;
+        }
+        chatLogoImg.src = dataUrl;
+        chatLogoImg.style.display = 'block';
+        chatLogoText.style.display = 'none';
+        chatLogoEl.style.backgroundImage = 'none';
+    }
+
+    logoFileInput.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) {
+            uploadedLogoDataUrl = null;
+            return;
+        }
+        if (!file.type.startsWith('image/')) {
+            alert('Please select an image file for the logo.');
+            logoFileInput.value = '';
+            uploadedLogoDataUrl = null;
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            uploadedLogoDataUrl = ev.target.result;
+            const fallback = (document.getElementById('config-name').value || 'A').charAt(0).toUpperCase();
+            setLogoFromDataUrl(uploadedLogoDataUrl, fallback);
+        };
+        reader.onerror = function(err) {
+            console.error('FileReader error:', err);
+            uploadedLogoDataUrl = null;
+        };
+        reader.readAsDataURL(file);
+    });
+
+    clearLogoBtn.addEventListener('click', () => {
+        logoFileInput.value = '';
+        uploadedLogoDataUrl = null;
+        const fallback = (document.getElementById('config-name').value || 'A').charAt(0).toUpperCase();
+        setLogoFromDataUrl(null, fallback);
+    });
+
+    document.getElementById('config-name').addEventListener('input', () => {
+        const name = document.getElementById('config-name').value || 'Chat Bot';
+        const tagline  = document.getElementById('config-tagline').value || "Hello How Can I Help You";
+        const fallback = name.charAt(0).toUpperCase();
+        if (chatLogoImg && chatLogoImg.style.display === 'none') {
+            chatLogoText.textContent = fallback;
+        }
+        chatTitle.textContent = name;
+        chatTagline.textContent = tagline;
+    });
+
+    // API helper
+    async function postJson(path, payload) {
+        const resp = await fetch(path, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload || {})
+        });
+        const data = await resp.json().catch(() => ({}));
+        if (!resp.ok) {
+            throw new Error(data.error || resp.statusText || 'Request failed');
+        }
+        return data;
+    }
+
+    // Progress animation (unchanged logic)
+    function animatePercentage(start, end, duration) {
+        return new Promise(resolve => {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const ease = 1 - Math.pow(1 - progress, 3);
+                const currentVal = Math.floor(start + (end - start) * ease);
+                percentDisplay.innerText = currentVal + '%';
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    resolve();
+                }
+            };
+            window.requestAnimationFrame(step);
+        });
+    }
+
+    // --- Bot list rendering ---
+    function renderBotsList(bots) {
+        if (!bots || bots.length === 0) {
+            botsContainer.innerHTML = '<div class="bots-empty">No bots created yet. Create your first bot using the form on the right.</div>';
+            botsCountLabel.textContent = '0 bots';
+            return;
+        }
+        botsCountLabel.textContent = `${bots.length} bot${bots.length > 1 ? 's' : ''}`;
+
+        const listDiv = document.createElement('div');
+        listDiv.className = 'bots-list';
+
+        bots.forEach(b => {
+            const row = document.createElement('div');
+            row.className = 'bot-row';
+
+            const main = document.createElement('div');
+            main.className = 'bot-main';
+
+            const nameEl = document.createElement('div');
+            nameEl.className = 'bot-name';
+            nameEl.textContent = b.name || 'AI Assistant';
+
+            const urlEl = document.createElement('div');
+            urlEl.className = 'bot-url';
+            urlEl.textContent = b.start_url || '';
+
+            main.appendChild(nameEl);
+            main.appendChild(urlEl);
+
+            const meta = document.createElement('div');
+            meta.className = 'bot-meta';
+
+            const statusBadge = document.createElement('div');
+            statusBadge.className = 'bot-status-badge';
+            statusBadge.textContent = (b.status || 'created').toUpperCase();
+            if (b.status === 'ready') {
+                statusBadge.classList.add('bot-status-ready');
+            }
+            meta.appendChild(statusBadge);
+
+            const linkUrl = b.share_url || (window.location.origin + '/bot/' + b.bot_id);
+            const linkBtn = document.createElement('a');
+            linkBtn.href = linkUrl;
+            linkBtn.target = '_blank';
+            linkBtn.rel = 'noopener noreferrer';
+            linkBtn.className = 'bot-link-btn';
+            linkBtn.textContent = 'Open bot';
+            meta.appendChild(linkBtn);
+
+            row.appendChild(main);
+            row.appendChild(meta);
+            listDiv.appendChild(row);
+        });
+
+        botsContainer.innerHTML = '';
+        botsContainer.appendChild(listDiv);
+    }
+
+    async function loadExistingBots() {
+        try {
+            const resp = await fetch('/bots');
+            if (!resp.ok) {
+                throw new Error('Failed to load bots');
+            }
+            const data = await resp.json();
+            renderBotsList(data.bots || []);
+        } catch (e) {
+            console.error(e);
+            botsContainer.innerHTML = '<div class="bots-empty">Unable to load bots list.</div>';
+            botsCountLabel.textContent = 'Error';
+        }
+    }
+
+    // Existing bot mode
+    async function initExistingBot(botId) {
+        try {
+            setupPanel.classList.add('hide-panel');
+            progressContainer.style.display = 'flex';
+            statusLabel.innerText = "Loading your assistant...";
+            percentDisplay.innerText = '0%';
+
+            const anim = animatePercentage(0, 80, 1200);
+
+            const res = await fetch(`/bots/${botId}`);
+            if (!res.ok) {
+                throw new Error("Bot not found");
+            }
+            const botInfo = await res.json();
+
+            const tagline  = botInfo.tagline || "How may I assist you today?";
+
+            const name = botInfo.name || "AI Assistant";
+            document.getElementById('config-name').value = name;
+            document.getElementById('config-tagline').value = tagline;
+            chatTitle.textContent = name;
+            chatTagline.textContent= tagline;
+            const fallbackLetter = name.charAt(0).toUpperCase();
+            setLogoFromDataUrl(null, fallbackLetter);
+
+            await anim;
+            await animatePercentage(80, 100, 600);
+            statusLabel.innerText = "Ready!";
+            await new Promise(r => setTimeout(r, 400));
+
+            progressContainer.style.opacity = '0';
+            progressContainer.style.transition = 'opacity 0.5s';
+
+            setTimeout(() => {
+                progressContainer.style.display = 'none';
+                chatInterface.classList.add('show-chat');
+            }, 500);
+        } catch (e) {
+            console.error(e);
+            alert("Unable to load this bot. Please check the link or contact support.");
+            progressContainer.style.display = 'none';
+            setupPanel.classList.remove('hide-panel');
+        }
+    }
+
+    // Admin mode: create new bot with /create-bot (logic unchanged, just styled)
+    startBtn.addEventListener('click', async () => {
+        const url = document.getElementById('config-url').value.trim();
+        const name = document.getElementById('config-name').value.trim() || 'AI Assistant';
+        const tagline = document.getElementById('config-tagline').value.trim() || 'How may I assist you today?';
+        if (!url) {
+            alert("Please enter a Target URL");
+            return;
+        }
+
+        try {
+            const u = new URL(url);
+            if (u.protocol !== 'http:' && u.protocol !== 'https:') throw new Error();
+        } catch {
+            alert("Please enter a valid http/https URL");
+            return;
+        }
+
+        setupPanel.classList.add('hide-panel');
+        progressContainer.style.display = 'flex';
+        statusLabel.innerText = "Building your bot...";
+        percentDisplay.innerText = '0%';
+
+        chatTitle.innerText = name;
+        chatTagline.innerText = tagline;
+        const fallbackLetter = name.charAt(0).toUpperCase();
+        if (!uploadedLogoDataUrl) {
+            setLogoFromDataUrl(null, fallbackLetter);
+        }
+
+        startBtn.disabled = true;
+
+        try {
+            const animPromise = animatePercentage(0, 95, 150000);
+
+            const createPromise = postJson('/create-bot', {
+                start_url: url,
+                name: name,
+                tagline: tagline,
+                max_pages: 50000,
+                render_js: false,
+                force: true
+            });
+
+            const createResult = await createPromise;
+            await animPromise;
+
+            if (!createResult || !createResult.bot_id) {
+                throw new Error("No bot_id returned from backend");
+            }
+
+            currentBotId = createResult.bot_id;
+
+            const currentPercent = parseInt(percentDisplay.innerText) || 95;
+            await animatePercentage(currentPercent, 100, 800);
+            statusLabel.innerText = "Ready!";
+
+            const shareUrl = createResult.share_url || (window.location.origin + '/bot/' + currentBotId);
+
+            // Small toast with the bot URL
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `
+                <div><strong>Bot created!</strong> Share this link with your client:</div>
+                <div class="toast-link">${shareUrl}</div>
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 12000);
+
+            // refresh list for future sessions (if user comes back)
+            loadExistingBots().catch(()=>{});
+
+            await new Promise(r => setTimeout(r, 500));
+            progressContainer.style.opacity = '0';
+            progressContainer.style.transition = 'opacity 0.5s';
+
+            setTimeout(() => {
+                progressContainer.style.display = 'none';
+                chatInterface.classList.add('show-chat');
+            }, 500);
+
+        } catch (e) {
+            console.error(e);
+            percentDisplay.innerText = '0%';
+            percentDisplay.style.color = '#ef4444';
+            statusLabel.innerText = "Bot creation failed";
+            statusLabel.style.color = '#ef4444';
+            alert("Error while creating bot: " + (e.message || e));
+            progressContainer.style.display = 'none';
+            setupPanel.classList.remove('hide-panel');
+        } finally {
+            startBtn.disabled = false;
+        }
+    });
+
+    // Chat UI (unchanged logic)
+    function appendMessage(role, text) {
+        const msgDiv = document.createElement("div");
+        msgDiv.className = `message ${role}`;
+        msgDiv.innerText = text;
+        chatBox.appendChild(msgDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    async function sendMessage() {
+        const text = userInput.value.trim();
+        if (!text) return;
+
+        if (!currentBotId) {
+            alert("Bot is not ready yet. Please finish setup first.");
+            return;
+        }
+
+        appendMessage("user", text);
+        userInput.value = "";
+        userInput.focus();
+
+        sendBtn.disabled = true;
+
+        const loadingId = "loading-" + Date.now();
+        const loadDiv = document.createElement("div");
+        loadDiv.className = "message assistant";
+        loadDiv.id = loadingId;
+        loadDiv.style.opacity = "0.7";
+        loadDiv.innerText = "...";
+        chatBox.appendChild(loadDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        try {
+            const res = await fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    message: text,
+                    bot_id: currentBotId,
+                    session_id: currentSessionId
+                })
+            });
+
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.error || "Chat request failed");
+            }
+
+            const data = await res.json();
+            const responseText = data.response || "No response.";
+
+            if (data.session_id) currentSessionId = data.session_id;
+            if (data.bot_id && !currentBotId) currentBotId = data.bot_id;
+
+            const loadEl = document.getElementById(loadingId);
+            if (loadEl) {
+                loadEl.innerText = responseText;
+                loadEl.style.opacity = "1";
+            }
+        } catch (err) {
+            console.error(err);
+            const loadEl = document.getElementById(loadingId);
+            if (loadEl) loadEl.innerText = "Error connecting to bot.";
+        } finally {
+            sendBtn.disabled = false;
+        }
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    userInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendMessage(); });
+
+    // Initial setup + bot list + deep-link
+    document.addEventListener('DOMContentLoaded', async () => {
+        const fallback = (document.getElementById('config-name').value || 'A').charAt(0).toUpperCase();
+        setLogoFromDataUrl(null, fallback);
+
+        loadExistingBots().catch(()=>{});
+
+        const botIdFromUrl = getBotIdFromLocation();
+        if (botIdFromUrl) {
+            currentBotId = botIdFromUrl;
+            await initExistingBot(currentBotId);
+        }
+    });
+</script>
+</body>
+</html>
