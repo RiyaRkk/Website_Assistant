@@ -592,69 +592,6 @@ def chat():
 
     return jsonify(resp)
 
-# ---- ADMIN PIPELINE ENDPOINTS (per-bot) ----
-# @app.route("/run-crawler", methods=["POST"])
-# def run_crawler():
-#     if not session.get("admin_logged_in"):
-#         return redirect(url_for("admin_login"))    
-#     body = request.json or {}
-#     start_url = body.get("start")
-#     bot_id = body.get("bot_id")
-
-#     if not start_url:
-#         return jsonify({"error": "start URL is required"}), 400
-#     if not bot_id:
-#         return jsonify({"error": "bot_id is required"}), 400
-
-#     max_pages = body.get("max_pages", 200)
-#     force = body.get("force", False)
-#     render_js = body.get("render_js", False)
-
-#     saved = crawl_site(
-#         start_url=start_url,
-#         max_pages=int(max_pages),
-#         force=bool(force),
-#         render_js=bool(render_js),
-#         bot_id=bot_id,
-#         dest_domain=None,
-#         politeness=1.0
-#     )
-
-#     BOT_EMB_CACHE.pop(bot_id, None)
-#     return jsonify({"status": "ok", "saved_pages": saved})
-
-# @app.route("/run-embedding", methods=["POST"])
-# def run_embedding_api():
-#     if not session.get("admin_logged_in"):
-#         return redirect(url_for("admin_login"))
-#     body = request.json or {}
-#     bot_id = body.get("bot_id")
-#     if not bot_id:
-#         return jsonify({"error": "bot_id is required"}), 400
-#     try:
-#         run_embedding_for_bot(bot_id)
-#         BOT_EMB_CACHE.pop(bot_id, None)
-#         return jsonify({"status": "ok"}), 200
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 500
-
-# @app.route("/run-chunking", methods=["POST"])
-# def run_chunking_api():
-#     if not session.get("admin_logged_in"):
-#         return redirect(url_for("admin_login"))
-#     body = request.json or {}
-#     bot_id = body.get("bot_id")
-#     if not bot_id:
-#         return jsonify({"error": "bot_id is required"}), 400
-#     try:
-#         run_chunking_for_bot(bot_id)
-#         BOT_EMB_CACHE.pop(bot_id, None)
-#         return jsonify({"status": "ok"}), 200
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 500
-
-
-
 from flask import render_template, request, redirect, url_for, session, flash
 
 @app.route("/admin/login", methods=["GET", "POST"])

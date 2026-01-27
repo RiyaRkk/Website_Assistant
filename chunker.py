@@ -345,9 +345,3 @@ def run_chunking_for_bot(bot_id: str):
         bot_id=bot_id
     )
 
-# if __name__ == "__main__":
-#     if len(sys.argv) < 2:
-#         print("Usage: python chunker.py <bot_id>")
-#         sys.exit(1)
-#     bot_id_cli = sys.argv[1]
-#     run_chunking_for_bot(bot_id_cli)
